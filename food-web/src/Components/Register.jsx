@@ -12,10 +12,7 @@ function Register() {
 
   const handleRegister = async () => {
     try {
-      const res = await axios.post(
-        "https://foodie-kb4r.onrender.com/api/auth/register",
-        form
-      );
+      const res = await axios.post("/auth/register", form);
       setMessage(res.data.message);
 
       setTimeout(() => {

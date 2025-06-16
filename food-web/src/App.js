@@ -40,7 +40,7 @@ const RouteHandler = ({
     }, 30000);
 
     return () => clearTimeout(timer);
-  }, [navigate, pathname]); // ✅ Added `pathname`
+  }, [navigate, pathname]);
 
   return (
     <Routes>

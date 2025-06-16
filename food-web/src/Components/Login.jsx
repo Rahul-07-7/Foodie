@@ -7,11 +7,9 @@ function Login() {
 
   const handleLogin = async () => {
     try {
-      const res = await axios.post(
-        "https://foodie-kb4r.onrender.com/api/auth/login",
-        form,
-        { withCredentials: true }
-      );
+      const res = await axios.post("/auth/login", form, {
+        withCredentials: true,
+      });
       setMessage(res.data.message);
       localStorage.setItem("isLoggedIn", "true");
       localStorage.setItem("username", res.data.username);
