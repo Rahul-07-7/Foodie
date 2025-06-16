@@ -45,10 +45,12 @@ function Cart({
   };
   const handlePlaceOrder = async () => {
     try {
-      // Step 1: Check if logged in
-      const authRes = await fetch("http://localhost:5000/api/auth/check-auth", {
-        credentials: "include",
-      });
+      const authRes = await fetch(
+        "https://foodie-kb4r.onrender.com/api/auth/check-auth",
+        {
+          credentials: "include",
+        }
+      );
       const authData = await authRes.json();
 
       if (!authData.authenticated) {
@@ -57,29 +59,29 @@ function Cart({
         return;
       }
 
-      // Step 2: Send order
-      const orderRes = await fetch("http://localhost:5000/api/orders", {
-        method: "POST",
-        credentials: "include", // ✅ sends session cookie
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          items: cartItems,
-          total: totalAmount,
-        }),
-      });
+      const orderRes = await fetch(
+        "https://foodie-kb4r.onrender.com/api/orders",
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            items: cartItems,
+            total: totalAmount,
+          }),
+        }
+      );
 
-      // ✅ Step 3: Detect wrong response
       const contentType = orderRes.headers.get("Content-Type");
       if (!contentType || !contentType.includes("application/json")) {
         const rawText = await orderRes.text();
-        console.error("❌ Server returned non-JSON:", rawText); // <--- log this
+        console.error("❌ Server returned non-JSON:", rawText);
         alert("Server returned unexpected response.");
         return;
       }
 
-      // ✅ Step 4: Handle valid JSON response
       const result = await orderRes.json();
       console.log("✅ Order result:", result);
 
