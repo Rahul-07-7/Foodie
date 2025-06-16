@@ -37,9 +37,6 @@ app.use("/api/auth", authRoutes);
 
 const orderRoutes = require("./routes/order.js"); // ✅ lowercase "routes"
 app.use("/api/orders", orderRoutes);
-app.use("*", (req, res) => {
-  res.status(404).json({ error: "Not Found" });
-});
 
 // ✅ Final single connection & server start
 mongoose
