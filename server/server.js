@@ -11,7 +11,7 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: "https://zestoria.netlify.app/",
+    origin: "https://zestoria.netlify.app",
     credentials: true,
   })
 );
@@ -25,8 +25,8 @@ app.use(
     cookie: {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24,
-      sameSite: "lax",
-      secure: false,
+      sameSite: "none", // 👈 cross-site support
+      secure: true, // 👈 required for HTTPS (Netlify & Render use HTTPS)
     },
   })
 );
