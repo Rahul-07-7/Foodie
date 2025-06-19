@@ -16,30 +16,33 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
-  try {
-    const { username, password } = req.body;
+  const { username, password } = req.body;
 
+  try {
     const user = await User.findOne({ username });
     if (!user) return res.status(400).json({ error: "Invalid username" });
 
-    const valid = await bcrypt.compare(password, user.password);
-    if (!valid) return res.status(400).json({ error: "Invalid password" });
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(400).json({ error: "Invalid password" });
 
+    // 🔥 REGENERATE to ensure clean session
     req.session.regenerate((err) => {
       if (err) {
-        console.error("Session regenerate error:", err);
-        return res.status(500).json({ error: "Session error" });
+        console.error("Session regeneration failed:", err);
+        return res.status(500).json({ error: "Session regeneration failed" });
       }
 
+      // ✅ Set userId in session
       req.session.userId = user._id;
 
+      // ✅ Save session and respond
       req.session.save((err) => {
         if (err) {
-          console.error("❌ Session save error:", err);
-          return res.status(500).json({ error: "Could not save session" });
+          console.error("Session save error:", err);
+          return res.status(500).json({ error: "Session save failed" });
         }
 
-        console.log("✅ Session saved successfully:", req.session);
+        console.log("✅ SESSION STORED:", req.session);
 
         return res.json({
           success: true,
@@ -48,9 +51,9 @@ router.post("/login", async (req, res) => {
         });
       });
     });
-  } catch (e) {
-    console.error("Login error:", e);
-    res.status(500).json({ error: "Internal server error" });
+  } catch (error) {
+    console.error("Login error:", error);
+    res.status(500).json({ error: "Server error" });
   }
 });
 
@@ -78,18 +81,11 @@ router.get("/check-auth", (req, res) => {
   }
 });
 router.get("/test-cookie", (req, res) => {
-  try {
-    res.json({
-      cookieSet: !!req.session,
-      sessionId: req.sessionID,
-      userId: req.session.userId || null,
-    });
-    console.log("Session:", req.session);
-    console.log("Session ID:", req.sessionID);
-  } catch (err) {
-    console.error("Test cookie error:", err);
-    res.status(500).json({ error: "Internal server error" });
-  }
+  res.json({
+    cookieSet: true,
+    sessionId: req.sessionID,
+    userId: req.session.userId || null,
+  });
 });
 
 module.exports = router;
