@@ -16,33 +16,42 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
-  const { username, password } = req.body;
-  const user = await User.findOne({ username });
-  if (!user) return res.status(400).json({ error: "Invalid username" });
+  try {
+    const { username, password } = req.body;
 
-  const valid = await bcrypt.compare(password, user.password);
-  if (!valid) return res.status(400).json({ error: "Invalid password" });
+    const user = await User.findOne({ username });
+    if (!user) return res.status(400).json({ error: "Invalid username" });
 
-  req.session.userId = user._id;
+    const valid = await bcrypt.compare(password, user.password);
+    if (!valid) return res.status(400).json({ error: "Invalid password" });
 
-  // Add a log to debug session
-  console.log("✅ Setting session.userId:", req.session.userId);
-  console.log("Session before save:", req.session);
+    req.session.regenerate((err) => {
+      if (err) {
+        console.error("Session regenerate error:", err);
+        return res.status(500).json({ error: "Session error" });
+      }
 
-  req.session.save((err) => {
-    if (err) {
-      console.error("❌ Session save error:", err);
-      return res.status(500).json({ error: "Session could not be saved" });
-    }
+      req.session.userId = user._id;
 
-    console.log("✅ Session saved:", req.session);
+      req.session.save((err) => {
+        if (err) {
+          console.error("❌ Session save error:", err);
+          return res.status(500).json({ error: "Could not save session" });
+        }
 
-    res.json({
-      success: true,
-      message: "Logged in",
-      username: user.username,
+        console.log("✅ Session saved successfully:", req.session);
+
+        return res.json({
+          success: true,
+          message: "Logged in",
+          username: user.username,
+        });
+      });
     });
-  });
+  } catch (e) {
+    console.error("Login error:", e);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 router.post("/logout", (req, res) => {
