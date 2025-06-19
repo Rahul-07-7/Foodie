@@ -10,7 +10,7 @@ import ScrollToTop from "./Components/Scrolltotop";
 import Register from "./Components/Register";
 import Login from "./Components/Login";
 import { useLocation } from "react-router-dom";
-import axios from "../axios"; // or wherever your instance is
+import axios from "./axios";
 
 const RouteHandler = ({
   cartItems,
@@ -23,6 +23,7 @@ const RouteHandler = ({
 
   const [loading, setLoading] = useState(true);
   const { pathname } = useLocation();
+
   useEffect(() => {
     const checkSession = async () => {
       if (["/login", "/register"].includes(pathname)) {
