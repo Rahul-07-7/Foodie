@@ -62,5 +62,12 @@ router.get("/check-auth", (req, res) => {
     res.json({ authenticated: false });
   }
 });
+router.get("/test-cookie", (req, res) => {
+  res.json({
+    cookieSet: !!req.session,
+    sessionId: req.sessionID,
+    userId: req.session.userId || null,
+  });
+});
 
 module.exports = router;
