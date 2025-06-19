@@ -18,6 +18,8 @@ function Login() {
       setMessage(res.data.message);
       localStorage.setItem("isLoggedIn", "true");
       localStorage.setItem("username", res.data.username);
+
+      // Slight delay to ensure session cookie is saved before checking auth
       setTimeout(() => {
         navigate("/");
       }, 100);
@@ -39,12 +41,14 @@ function Login() {
             type="text"
             placeholder="Username"
             className="login-input"
+            value={form.username}
             onChange={(e) => setForm({ ...form, username: e.target.value })}
           />
           <input
             type="password"
             placeholder="Password"
             className="login-input"
+            value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
           />
           <button className="login-button" onClick={handleLogin}>
@@ -59,9 +63,9 @@ function Login() {
               {message}
             </p>
           )}
-          {/* ✅ Add Register Link */}
+
           <p className="register-link">
-            Don't have an account? <a href="/register">Register</a>
+            Don&apos;t have an account? <a href="/register">Register</a>
           </p>
         </div>
       )}
