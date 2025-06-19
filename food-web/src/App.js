@@ -36,6 +36,7 @@ const RouteHandler = ({
             credentials: "include",
           }
         );
+
         const data = await res.json();
         if (!data.authenticated) {
           navigate("/login");
