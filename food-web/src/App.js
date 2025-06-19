@@ -50,6 +50,7 @@ const RouteHandler = ({
 
     checkSession();
   }, [navigate, pathname]);
+  if (loading) return <Loader />;
   return (
     <Routes>
       <Route path="/register" element={<Register />} />
