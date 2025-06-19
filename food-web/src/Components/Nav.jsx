@@ -1,11 +1,11 @@
 import axios from "../axios";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Nav() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-
+  const navigate = useNavigate();
   const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
   const username = localStorage.getItem("username") || "User";
 
@@ -14,7 +14,8 @@ function Nav() {
       await axios.post("/auth/logout", {}, { withCredentials: true });
       localStorage.removeItem("isLoggedIn");
       localStorage.removeItem("username");
-      window.location.href = "/login";
+      navigate("/login");
+      localStorage.clear();
     } catch (err) {
       alert("Logout failed");
     }

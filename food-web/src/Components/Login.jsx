@@ -19,7 +19,6 @@ function Login() {
       localStorage.setItem("isLoggedIn", "true");
       localStorage.setItem("username", res.data.username);
 
-      // Slight delay to ensure session cookie is saved before checking auth
       setTimeout(() => {
         navigate("/");
       }, 100);

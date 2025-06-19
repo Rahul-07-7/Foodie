@@ -11,7 +11,7 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://zestoria.netlify.app"],
+    origin: ["https://zestoria.netlify.app"],
     credentials: true,
   })
 );
@@ -23,24 +23,20 @@ app.use(
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
     cookie: {
-      // secure: false, // ✅ FALSE for localhost (true only for HTTPS)
-      // sameSite: "lax",
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24,
-      sameSite: "none", // 👈 cross-site support
-      secure: true, // 👈 required for HTTPS (Netlify & Render use HTTPS)
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      secure: process.env.NODE_ENV === "production",
     },
   })
 );
 
-// Routes
 const authRoutes = require("./routes/auth.js");
 app.use("/api/auth", authRoutes);
 
-const orderRoutes = require("./routes/order.js"); // ✅ lowercase "routes"
+const orderRoutes = require("./routes/order.js");
 app.use("/api/orders", orderRoutes);
 
-// ✅ Final single connection & server start
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
