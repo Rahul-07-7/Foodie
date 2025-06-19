@@ -63,11 +63,18 @@ router.get("/check-auth", (req, res) => {
   }
 });
 router.get("/test-cookie", (req, res) => {
-  res.json({
-    cookieSet: !!req.session,
-    sessionId: req.sessionID,
-    userId: req.session.userId || null,
-  });
+  try {
+    res.json({
+      cookieSet: !!req.session,
+      sessionId: req.sessionID,
+      userId: req.session.userId || null,
+    });
+    console.log("Session:", req.session);
+    console.log("Session ID:", req.sessionID);
+  } catch (err) {
+    console.error("Test cookie error:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 module.exports = router;
