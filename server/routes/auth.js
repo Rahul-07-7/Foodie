@@ -24,7 +24,20 @@ router.post("/login", async (req, res) => {
   if (!valid) return res.status(400).json({ error: "Invalid password" });
 
   req.session.userId = user._id;
-  res.json({ success: true, message: "Logged in", username: user.username });
+
+  // ✅ Wait for session to be saved before sending the response
+  req.session.save((err) => {
+    if (err) {
+      console.error("Session save error:", err);
+      return res.status(500).json({ error: "Session could not be saved" });
+    }
+
+    res.json({
+      success: true,
+      message: "Logged in",
+      username: user.username,
+    });
+  });
 });
 
 router.post("/logout", (req, res) => {
