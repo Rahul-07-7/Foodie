@@ -25,11 +25,17 @@ router.post("/login", async (req, res) => {
 
   req.session.userId = user._id;
 
+  // Add a log to debug session
+  console.log("✅ Setting session.userId:", req.session.userId);
+  console.log("Session before save:", req.session);
+
   req.session.save((err) => {
     if (err) {
-      console.error("Session save error:", err);
+      console.error("❌ Session save error:", err);
       return res.status(500).json({ error: "Session could not be saved" });
     }
+
+    console.log("✅ Session saved:", req.session);
 
     res.json({
       success: true,
