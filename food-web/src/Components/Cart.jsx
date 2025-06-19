@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Nav from "./Nav";
 import Cartbtn from "./Cartbtn";
+import axios from "../axios";
 
 function Cart({
   cartItems,
@@ -43,15 +44,11 @@ function Cart({
     setShowSummary(true);
     setShowCheckout(false);
   };
+
   const handlePlaceOrder = async () => {
     try {
-      const authRes = await fetch(
-        "https://foodie-kb4r.onrender.com/api/auth/check-auth",
-        {
-          credentials: "include",
-        }
-      );
-      const authData = await authRes.json();
+      const authRes = await axios.get("/auth/check-auth");
+      const authData = authRes.data;
 
       if (!authData.authenticated) {
         alert("Please log in before placing an order.");
@@ -59,45 +56,26 @@ function Cart({
         return;
       }
 
-      const orderRes = await fetch(
-        "https://foodie-kb4r.onrender.com/api/orders",
-        {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            items: cartItems,
-            total: totalAmount,
-          }),
-        }
-      );
+      const orderRes = await axios.post("/orders", {
+        items: cartItems,
+        total: totalAmount,
+      });
 
-      const contentType = orderRes.headers.get("Content-Type");
-      if (!contentType || !contentType.includes("application/json")) {
-        const rawText = await orderRes.text();
-        console.error("❌ Server returned non-JSON:", rawText);
-        alert("Server returned unexpected response.");
-        return;
-      }
-
-      const result = await orderRes.json();
+      const result = orderRes.data;
       console.log("✅ Order result:", result);
 
-      if (orderRes.ok) {
-        setShowPopup(true);
-        setTimeout(() => {
-          setShowPopup(false);
-          clearCart();
-          navigate("/menu");
-        }, 3000);
-      } else {
-        alert(result?.error || "Something went wrong.");
-      }
+      setShowPopup(true);
+      setTimeout(() => {
+        setShowPopup(false);
+        clearCart();
+        navigate("/menu");
+      }, 3000);
     } catch (error) {
       console.error("❌ Order error:", error);
-      alert("Server error while placing order.");
+
+      const errMsg =
+        error.response?.data?.error || "Server error while placing order.";
+      alert(errMsg);
     }
   };
 

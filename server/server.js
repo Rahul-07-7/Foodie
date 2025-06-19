@@ -23,11 +23,10 @@ app.use(
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
     cookie: {
-      domain: "foodie-kb4r.onrender.com",
       httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24,
       secure: true,
       sameSite: "none",
+      maxAge: 1000 * 60 * 60 * 24,
     },
   })
 );
