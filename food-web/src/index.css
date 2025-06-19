@@ -1522,6 +1522,21 @@ table tr {
     width: 40%;
   }
 }
+.register-link {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 14px;
+  color: #555;
+}
+.register-link a {
+  color: #e91e63;
+  text-decoration: none;
+  font-weight: 500;
+}
+.register-link a:hover {
+  text-decoration: underline;
+}
+
 .user-dropdown button {
   padding: 10px 20px;
   background: none;

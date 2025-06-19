@@ -9,6 +9,7 @@ import Loader from "./Components/Loader";
 import ScrollToTop from "./Components/Scrolltotop";
 import Register from "./Components/Register";
 import Login from "./Components/Login";
+import { useLocation } from "react-router-dom";
 
 const RouteHandler = ({
   cartItems,
@@ -19,29 +20,36 @@ const RouteHandler = ({
 }) => {
   const navigate = useNavigate();
 
-  const pathname = window.location.pathname;
+  const [loading, setLoading] = useState(true);
+  const { pathname } = useLocation();
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (pathname === "/login" || pathname === "/register") return;
+    const checkSession = async () => {
+      if (pathname === "/login" || pathname === "/register") {
+        setLoading(false);
+        return;
+      }
 
-      fetch("http://localhost:5000/api/auth/check-auth", {
-        credentials: "include",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (!data.authenticated) {
-            navigate("/login");
+      try {
+        const res = await fetch(
+          "https://foodie-kb4r.onrender.com/api/auth/check-auth",
+          {
+            credentials: "include",
           }
-        })
-        .catch((err) => {
-          console.error("Auth check failed:", err);
+        );
+        const data = await res.json();
+        if (!data.authenticated) {
           navigate("/login");
-        });
-    }, 30000);
+        }
+      } catch (err) {
+        console.error("Auth check failed:", err);
+        navigate("/login");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    return () => clearTimeout(timer);
+    checkSession();
   }, [navigate, pathname]);
-
   return (
     <Routes>
       <Route path="/register" element={<Register />} />
