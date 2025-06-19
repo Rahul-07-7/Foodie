@@ -23,12 +23,12 @@ app.use(
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
     cookie: {
-      secure: false, // ✅ FALSE for localhost (true only for HTTPS)
-      sameSite: "lax",
+      // secure: false, // ✅ FALSE for localhost (true only for HTTPS)
+      // sameSite: "lax",
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24,
-      // sameSite: "none", // 👈 cross-site support
-      // secure: true, // 👈 required for HTTPS (Netlify & Render use HTTPS)
+      sameSite: "none", // 👈 cross-site support
+      secure: true, // 👈 required for HTTPS (Netlify & Render use HTTPS)
     },
   })
 );
