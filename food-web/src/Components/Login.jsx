@@ -1,11 +1,13 @@
 import { useState } from "react";
 import axios from "../axios";
 import Loader from "./Loader";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [form, setForm] = useState({ username: "", password: "" });
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     setLoading(true);
@@ -17,8 +19,8 @@ function Login() {
       localStorage.setItem("isLoggedIn", "true");
       localStorage.setItem("username", res.data.username);
       setTimeout(() => {
-        window.location.href = "/";
-      }, 1000);
+        navigate("/");
+      }, 100);
     } catch (err) {
       setMessage(err.response?.data?.error || "Something went wrong");
     } finally {
