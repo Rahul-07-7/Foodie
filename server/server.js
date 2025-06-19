@@ -23,7 +23,7 @@ app.use(
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
     cookie: {
-      domain: ".onrender.com", // or just don't set domain (let browser infer)
+      domain: "foodie-kb4r.onrender.com",
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24,
       secure: true,
@@ -31,6 +31,10 @@ app.use(
     },
   })
 );
+app.get("/api/test-cookie", (req, res) => {
+  req.session.test = "hello";
+  res.json({ cookieSet: true, sessionId: req.sessionID });
+});
 
 const authRoutes = require("./routes/auth.js");
 app.use("/api/auth", authRoutes);

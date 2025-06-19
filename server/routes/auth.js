@@ -25,7 +25,6 @@ router.post("/login", async (req, res) => {
 
   req.session.userId = user._id;
 
-  // ✅ Wait for session to be saved before sending the response
   req.session.save((err) => {
     if (err) {
       console.error("Session save error:", err);
@@ -55,15 +54,13 @@ router.get("/me", async (req, res) => {
 });
 
 router.get("/check-auth", (req, res) => {
-  if (req.session && req.session.userId) {
+  console.log("SessionID:", req.sessionID);
+  console.log("Session:", req.session);
+  if (req.session.userId) {
     res.json({ authenticated: true });
   } else {
     res.json({ authenticated: false });
   }
-});
-router.get("/api/test-cookie", (req, res) => {
-  req.session.test = "hello";
-  res.json({ cookieSet: true, sessionId: req.sessionID });
 });
 
 module.exports = router;
