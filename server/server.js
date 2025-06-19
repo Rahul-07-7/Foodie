@@ -23,6 +23,7 @@ app.use(
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
     cookie: {
+      domain: ".onrender.com", // or just don't set domain (let browser infer)
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24,
       secure: true,
