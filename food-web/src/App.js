@@ -10,6 +10,7 @@ import ScrollToTop from "./Components/Scrolltotop";
 import Register from "./Components/Register";
 import Login from "./Components/Login";
 import { useLocation } from "react-router-dom";
+import axios from "../axios"; // or wherever your instance is
 
 const RouteHandler = ({
   cartItems,
@@ -24,20 +25,15 @@ const RouteHandler = ({
   const { pathname } = useLocation();
   useEffect(() => {
     const checkSession = async () => {
-      if (pathname === "/login" || pathname === "/register") {
+      if (["/login", "/register"].includes(pathname)) {
         setLoading(false);
         return;
       }
 
       try {
-        const res = await fetch(
-          "https://foodie-kb4r.onrender.com/api/auth/check-auth",
-          {
-            credentials: "include",
-          }
-        );
+        const res = await axios.get("/auth/check-auth");
+        const data = res.data;
 
-        const data = await res.json();
         if (!data.authenticated) {
           navigate("/login");
         }
