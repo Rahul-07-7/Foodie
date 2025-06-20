@@ -25,12 +25,6 @@ const RouteHandler = ({
   const { pathname } = useLocation();
 
   useEffect(() => {
-    axios.get("/auth/test-cookie").then((res) => {
-      console.log("✅ Cookie Test Response:", res.data);
-    });
-  }, []);
-
-  useEffect(() => {
     const checkSession = async () => {
       if (["/login", "/register"].includes(pathname)) {
         setLoading(false);
