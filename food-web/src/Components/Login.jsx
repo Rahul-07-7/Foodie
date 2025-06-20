@@ -11,19 +11,29 @@ function Login() {
 
   const handleLogin = async () => {
     setLoading(true);
+
+    if (!form.username || !form.password) {
+      setMessage("Please enter both username and password.");
+      return setLoading(false);
+    }
+
     try {
       const res = await axios.post("/auth/login", form, {
         withCredentials: true,
       });
-      setMessage(res.data.message);
 
-      const verify = await axios.get("/auth/check-auth");
-      if (verify.data.authenticated) {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      const check = await axios.get("/auth/check-auth", {
+        withCredentials: true,
+      });
+
+      if (check.data.authenticated) {
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("username", res.data.username);
         navigate("/");
       } else {
-        setMessage("Login session not established.");
+        setMessage("Login failed: Session not established.");
       }
     } catch (err) {
       setMessage(err.response?.data?.error || "Something went wrong");
