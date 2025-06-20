@@ -44,26 +44,22 @@ router.post("/login", async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ error: "Invalid password" });
 
-    // 🔥 REGENERATE to ensure clean session
     req.session.regenerate((err) => {
       if (err) {
         console.error("Session regeneration failed:", err);
-        return res.status(500).json({ error: "Session regeneration failed" });
+        return res.status(500).json({ error: "Session error" });
       }
 
-      // ✅ Set userId in session
       req.session.userId = user._id;
 
-      // ✅ Save session and respond
       req.session.save((err) => {
         if (err) {
-          console.error("Session save error:", err);
-          return res.status(500).json({ error: "Session save failed" });
+          console.error("❌ Session save failed:", err);
+          return res.status(500).json({ error: "Session save error" });
         }
 
-        console.log("✅ SESSION STORED:", req.session);
-
-        return res.json({
+        console.log("✅ SESSION SAVED:", req.session);
+        res.json({
           success: true,
           message: "Logged in",
           username: user.username,
@@ -92,18 +88,20 @@ router.get("/me", async (req, res) => {
 
 router.get("/check-auth", (req, res) => {
   console.log("SessionID:", req.sessionID);
-  console.log("Session:", req.session);
+  console.log("Session Data:", req.session);
+
   if (req.session.userId) {
     res.json({ authenticated: true });
   } else {
     res.json({ authenticated: false });
   }
 });
-router.get("/test-cookie", (req, res) => {
+
+router.get("/debug-session", (req, res) => {
   res.json({
-    cookieSet: true,
     sessionId: req.sessionID,
-    userId: req.session.userId || null,
+    session: req.session,
+    cookies: req.cookies,
   });
 });
 
