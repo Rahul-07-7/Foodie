@@ -6,11 +6,30 @@ const User = require("../models/User");
 router.post("/register", async (req, res) => {
   const { username, email, password } = req.body;
   const hashed = await bcrypt.hash(password, 10);
+
   try {
     const user = await User.create({ username, email, password: hashed });
-    req.session.userId = user._id;
-    res.json({ message: "Registered successfully" });
+
+    req.session.regenerate((err) => {
+      if (err) {
+        console.error("Session regeneration failed:", err);
+        return res.status(500).json({ error: "Session error" });
+      }
+
+      req.session.userId = user._id;
+
+      req.session.save((err) => {
+        if (err) {
+          console.error("❌ Session save failed:", err);
+          return res.status(500).json({ error: "Session save error" });
+        }
+
+        console.log("✅ Registered session stored:", req.session);
+        res.json({ message: "Registered successfully" });
+      });
+    });
   } catch (e) {
+    console.error("Registration error:", e);
     res.status(400).json({ error: "Username already exists" });
   }
 });
