@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "../axios";
-import Loader from "./Loader"; // ✅ add this
+import Loader from "./Loader";
 
 function Register() {
   const [form, setForm] = useState({
@@ -9,12 +9,14 @@ function Register() {
     password: "",
   });
   const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false); // ✅ new
+  const [loading, setLoading] = useState(false);
 
   const handleRegister = async () => {
-    setLoading(true); // ✅ start loader
+    setLoading(true); //
     try {
-      const res = await axios.post("/auth/register", form);
+      const res = await axios.post("/auth/register", form, {
+        withCredentials: true,
+      });
       setMessage(res.data.message);
       setTimeout(() => {
         window.location.href = "/login";
@@ -22,7 +24,7 @@ function Register() {
     } catch (err) {
       setMessage(err.response?.data?.error || "Something went wrong");
     } finally {
-      setLoading(false); // ✅ stop loader
+      setLoading(false);
     }
   };
 

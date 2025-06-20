@@ -16,12 +16,15 @@ function Login() {
         withCredentials: true,
       });
       setMessage(res.data.message);
-      localStorage.setItem("isLoggedIn", "true");
-      localStorage.setItem("username", res.data.username);
 
-      setTimeout(() => {
+      const verify = await axios.get("/auth/check-auth");
+      if (verify.data.authenticated) {
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("username", res.data.username);
         navigate("/");
-      }, 100);
+      } else {
+        setMessage("Login session not established.");
+      }
     } catch (err) {
       setMessage(err.response?.data?.error || "Something went wrong");
     } finally {
