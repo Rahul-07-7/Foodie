@@ -18,23 +18,15 @@ function Login() {
     }
 
     try {
-      const res = await axios.post("/auth/login", form, {
-        withCredentials: true,
-      });
+      const res = await axios.post("/auth/login", form);
 
       await new Promise((resolve) => setTimeout(resolve, 500));
 
-      const check = await axios.get("/auth/check-auth", {
-        withCredentials: true,
-      });
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("username", res.data.username);
+      localStorage.setItem("isLoggedIn", "true");
 
-      if (check.data.authenticated) {
-        localStorage.setItem("isLoggedIn", "true");
-        localStorage.setItem("username", res.data.username);
-        navigate("/");
-      } else {
-        setMessage("Login failed: Session not established.");
-      }
+      navigate("/");
     } catch (err) {
       setMessage(err.response?.data?.error || "Something went wrong");
     } finally {

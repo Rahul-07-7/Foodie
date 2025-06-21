@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "../axios";
 import Loader from "./Loader";
+import { useNavigate } from "react-router-dom";
 
 function Register() {
   const [form, setForm] = useState({
@@ -10,16 +11,20 @@ function Register() {
   });
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleRegister = async () => {
-    setLoading(true); //
+    setLoading(true);
     try {
-      const res = await axios.post("/auth/register", form, {
-        withCredentials: true,
-      });
+      const res = await axios.post("/auth/register", form);
       setMessage(res.data.message);
+
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("username", form.username);
+      localStorage.setItem("isLoggedIn", "true");
+
       setTimeout(() => {
-        window.location.href = "/login";
+        navigate("/");
       }, 2000);
     } catch (err) {
       setMessage(err.response?.data?.error || "Something went wrong");
@@ -27,7 +32,6 @@ function Register() {
       setLoading(false);
     }
   };
-
   return (
     <div className="register-container">
       {loading ? (

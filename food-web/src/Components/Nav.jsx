@@ -1,4 +1,3 @@
-import axios from "../axios";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -9,16 +8,12 @@ function Nav() {
   const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
   const username = localStorage.getItem("username") || "User";
 
-  const handleLogout = async () => {
-    try {
-      await axios.post("/auth/logout", {}, { withCredentials: true });
-      localStorage.removeItem("isLoggedIn");
-      localStorage.removeItem("username");
-      navigate("/login");
-      localStorage.clear();
-    } catch (err) {
-      alert("Logout failed");
-    }
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("username");
+    localStorage.removeItem("isLoggedIn");
+
+    navigate("/login");
   };
 
   const contactInfo = [

@@ -20,49 +20,39 @@ function Cart({
     city: "",
     state: "",
     zip: "",
-    cardName: "",
-    cardNumber: "",
-    expMonth: "",
-    expYear: "",
-    cvv: "",
+    paymentMethod: "cod",
+    upiId: "",
   });
 
   const navigate = useNavigate();
-
   const totalAmount = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
 
   const handleInputChange = (e) => {
-    const { id, value } = e.target;
-    setFormData({ ...formData, [id]: value });
-  };
-
-  const handleCheckout = (e) => {
-    e.preventDefault();
-    setShowSummary(true);
-    setShowCheckout(false);
+    const { id, name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name || id]: value,
+    }));
   };
 
   const handlePlaceOrder = async () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Please log in before placing an order.");
+      navigate("/login");
+      return;
+    }
+
     try {
-      const authRes = await axios.get("/auth/check-auth");
-      const authData = authRes.data;
-
-      if (!authData.authenticated) {
-        alert("Please log in before placing an order.");
-        navigate("/login");
-        return;
-      }
-
-      const orderRes = await axios.post("/orders", {
-        items: cartItems,
-        total: totalAmount,
-      });
-
-      const result = orderRes.data;
-      console.log("✅ Order result:", result);
+      await axios.post(
+        "/orders",
+        { items: cartItems, total: totalAmount },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
       setShowPopup(true);
       setTimeout(() => {
@@ -71,28 +61,16 @@ function Cart({
         navigate("/menu");
       }, 3000);
     } catch (error) {
-      console.error("❌ Order error:", error);
-
       const errMsg =
         error.response?.data?.error || "Server error while placing order.";
       alert(errMsg);
     }
   };
 
-  const handleIncrement = (idx) => {
-    const updatedItem = {
-      ...cartItems[idx],
-      quantity: cartItems[idx].quantity + 1,
-    };
-    updateCartItemQuantity(idx, updatedItem);
-  };
-
-  const handleDecrement = (idx) => {
-    const updatedItem = {
-      ...cartItems[idx],
-      quantity: Math.max(1, cartItems[idx].quantity - 1),
-    };
-    updateCartItemQuantity(idx, updatedItem);
+  const handleCheckout = (e) => {
+    e.preventDefault();
+    setShowSummary(true);
+    setShowCheckout(false);
   };
 
   return (
@@ -109,241 +87,17 @@ function Cart({
         ) : (
           <>
             {!showCheckout && !showSummary && (
-              <div className="table-responsive">
-                <table className="table table-bordered">
-                  <thead>
-                    <tr>
-                      <th>Menu Image</th>
-                      <th>Menu Name</th>
-                      <th>Price</th>
-                      <th>Quantity</th>
-                      <th>Total</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {cartItems.map((item, idx) => (
-                      <tr key={idx}>
-                        <td>
-                          <img src={item.img} alt={item.title} width="50" />
-                        </td>
-                        <td>{item.title}</td>
-                        <td>₹ {item.price}</td>
-                        <td className="quantity-btn">
-                          <button
-                            className="btn btn-sm btn-outline-secondary me-2"
-                            onClick={() => handleDecrement(idx)}
-                          >
-                            -
-                          </button>
-                          {item.quantity}
-                          <button
-                            className="btn btn-sm btn-outline-secondary ms-2"
-                            onClick={() => handleIncrement(idx)}
-                          >
-                            +
-                          </button>
-                        </td>
-                        <td>₹ {item.price * item.quantity}</td>
-                        <td>
-                          <button
-                            className="btn btn-danger btn-sm"
-                            onClick={() => removeFromCart(idx)}
-                          >
-                            Remove
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-
-            {!showCheckout && !showSummary && (
-              <div className="d-flex justify-content-between mt-5 mb-3">
-                <Cartbtn
-                  text="Continue Shopping"
-                  onClick={() => navigate("/menu")}
-                />
-                <Cartbtn
-                  text="Proceed to Payment"
-                  onClick={() => setShowCheckout(true)}
-                />
-              </div>
-            )}
-
-            {showCheckout && (
-              <div className="billing-section mt-5">
-                <h2 className="mb-4 text-warning">Billing & Payment</h2>
-                <form onSubmit={handleCheckout}>
-                  <div className="row">
-                    <div className="col">
-                      <h5 className="title">Billing Address</h5>
-                      <div className="input-box">
-                        <label htmlFor="fullname">Full Name:</label>
-                        <input
-                          type="text"
-                          id="fullname"
-                          placeholder="Rahul Jogadiya"
-                          value={formData.fullname}
-                          onChange={handleInputChange}
-                          required
-                        />
-                      </div>
-                      <div className="input-box">
-                        <label htmlFor="email">Email:</label>
-                        <input
-                          type="email"
-                          id="email"
-                          placeholder="example@email.com"
-                          value={formData.email}
-                          onChange={handleInputChange}
-                          required
-                        />
-                      </div>
-                      <div className="input-box">
-                        <label htmlFor="address">Address:</label>
-                        <input
-                          type="text"
-                          id="address"
-                          placeholder="room - street - locality"
-                          value={formData.address}
-                          onChange={handleInputChange}
-                          required
-                        />
-                      </div>
-                      <div className="input-box">
-                        <label htmlFor="city">City:</label>
-                        <input
-                          type="text"
-                          id="city"
-                          placeholder="City"
-                          value={formData.city}
-                          onChange={handleInputChange}
-                          required
-                        />
-                      </div>
-                      <div className="flex">
-                        <div className="input-box">
-                          <label htmlFor="state">State:</label>
-                          <input
-                            type="text"
-                            id="state"
-                            placeholder="State"
-                            value={formData.state}
-                            onChange={handleInputChange}
-                            required
-                          />
-                        </div>
-                        <div className="input-box">
-                          <label htmlFor="zip">Zip Code:</label>
-                          <input
-                            type="text"
-                            id="zip"
-                            placeholder="Zip"
-                            value={formData.zip}
-                            onChange={handleInputChange}
-                            required
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="col">
-                      <h5 className="title">Payment</h5>
-                      <div className="input-box">
-                        <label>Cards Accepted:</label>
-                        <img
-                          src="https://raw.githubusercontent.com/Gustavo-Victor/payment-gateway-form/e2eeb53a05d6b5ada2d10306a9fd0b20605a897c/assets/images/card_img.png"
-                          alt="cards accepted"
-                        />
-                      </div>
-                      <div className="input-box">
-                        <label htmlFor="cardName">Name on Card:</label>
-                        <input
-                          type="text"
-                          id="cardName"
-                          placeholder="Mr. Rahul Jogadiya"
-                          value={formData.cardName}
-                          onChange={handleInputChange}
-                          required
-                        />
-                      </div>
-                      <div className="input-box">
-                        <label htmlFor="cardNumber">Card Number:</label>
-                        <input
-                          type="text"
-                          id="cardNumber"
-                          placeholder="1111 2222 3333 4444"
-                          value={formData.cardNumber}
-                          onChange={handleInputChange}
-                          required
-                        />
-                      </div>
-                      <div className="input-box">
-                        <label htmlFor="expMonth">Exp Month:</label>
-                        <input
-                          type="number"
-                          id="expMonth"
-                          placeholder="03"
-                          min="1"
-                          max="12"
-                          value={formData.expMonth}
-                          onChange={handleInputChange}
-                          required
-                        />
-                      </div>
-                      <div className="flex">
-                        <div className="input-box">
-                          <label htmlFor="expYear">Exp Year:</label>
-                          <input
-                            type="number"
-                            id="expYear"
-                            placeholder="2029"
-                            value={formData.expYear}
-                            onChange={handleInputChange}
-                            required
-                          />
-                        </div>
-                        <div className="input-box">
-                          <label htmlFor="cvv">CVV:</label>
-                          <input
-                            type="number"
-                            id="cvv"
-                            placeholder="945"
-                            value={formData.cvv}
-                            onChange={handleInputChange}
-                            required
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="d-flex justify-content-between mt-5 mb-3">
-                    <Cartbtn text="Proceed to  Checkout" />
-                    <Cartbtn
-                      text="Back"
-                      onClick={() => setShowCheckout(false)}
-                    />
-                  </div>
-                </form>
-              </div>
-            )}
-
-            {showSummary && (
-              <div className="mt-5">
-                <h4>Your Order Summary</h4>
+              <>
                 <div className="table-responsive">
-                  <table className="table table-bordered mt-3">
+                  <table className="table table-bordered">
                     <thead>
                       <tr>
-                        <th>Image</th>
-                        <th>Name</th>
+                        <th>Menu Image</th>
+                        <th>Menu Name</th>
                         <th>Price</th>
-                        <th>Qty</th>
+                        <th>Quantity</th>
                         <th>Total</th>
+                        <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -356,23 +110,121 @@ function Cart({
                           <td>₹ {item.price}</td>
                           <td>{item.quantity}</td>
                           <td>₹ {item.price * item.quantity}</td>
+                          <td>
+                            <button
+                              className="btn btn-danger btn-sm"
+                              onClick={() => removeFromCart(idx)}
+                            >
+                              Remove
+                            </button>
+                          </td>
                         </tr>
                       ))}
                     </tbody>
-                    <tfoot>
-                      <tr>
-                        <td colSpan="4" className="text-end fw-bold">
-                          Total:
-                        </td>
-                        <td className="fw-bold" style={{ color: "#eb0029" }}>
-                          ₹ {totalAmount}
-                        </td>
-                      </tr>
-                    </tfoot>
                   </table>
                 </div>
-                <div className="mt-4 p-3 border rounded">
-                  <h5>Billing Details</h5>
+                <div className="d-flex justify-content-between mt-5 mb-3">
+                  <Cartbtn
+                    text="Continue Shopping"
+                    onClick={() => navigate("/menu")}
+                  />
+                  <Cartbtn
+                    text="Proceed to Payment"
+                    onClick={() => setShowCheckout(true)}
+                  />
+                </div>
+              </>
+            )}
+
+            {showCheckout && (
+              <div className="billing-section mt-5">
+                <h2 className="mb-4 text-warning">Billing & Payment</h2>
+                <form onSubmit={handleCheckout}>
+                  <div className="row">
+                    <div className="col">
+                      <h5 className="title">Billing Address</h5>
+                      {[
+                        "fullname",
+                        "email",
+                        "address",
+                        "city",
+                        "state",
+                        "zip",
+                      ].map((field) => (
+                        <div className="input-box" key={field}>
+                          <label htmlFor={field}>
+                            {field.charAt(0).toUpperCase() + field.slice(1)}:
+                          </label>
+                          <input
+                            type="text"
+                            id={field}
+                            placeholder={field}
+                            value={formData[field]}
+                            onChange={handleInputChange}
+                            required
+                          />
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="col">
+                      <h5 className="title">Payment</h5>
+                      <div className="input-box">
+                        <label>
+                          <input
+                            type="radio"
+                            name="paymentMethod"
+                            value="cod"
+                            checked={formData.paymentMethod === "cod"}
+                            onChange={handleInputChange}
+                            required
+                          />{" "}
+                          Cash on Delivery
+                        </label>
+                        <br />
+                        <label>
+                          <input
+                            type="radio"
+                            name="paymentMethod"
+                            value="upi"
+                            checked={formData.paymentMethod === "upi"}
+                            onChange={handleInputChange}
+                          />{" "}
+                          UPI
+                        </label>
+                      </div>
+
+                      {formData.paymentMethod === "upi" && (
+                        <div className="input-box">
+                          <label htmlFor="upiId">UPI ID:</label>
+                          <input
+                            type="text"
+                            id="upiId"
+                            placeholder="example@upi"
+                            value={formData.upiId}
+                            onChange={handleInputChange}
+                            required
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="d-flex justify-content-between mt-5 mb-3">
+                    <Cartbtn text="Proceed to Checkout" />
+                    <Cartbtn
+                      text="Back"
+                      onClick={() => setShowCheckout(false)}
+                    />
+                  </div>
+                </form>
+              </div>
+            )}
+
+            {showSummary && (
+              <div className="mt-5">
+                <h4>Your Order Summary</h4>
+                <div className="mt-3 border rounded p-3">
                   <p>
                     <strong>Name:</strong> {formData.fullname}
                   </p>
@@ -380,12 +232,10 @@ function Cart({
                     <strong>Email:</strong> {formData.email}
                   </p>
                   <p>
-                    <strong>Address:</strong> {formData.address},{" "}
-                    {formData.city}, {formData.state} - {formData.zip}
+                    <strong>Total Amount:</strong> ₹ {totalAmount}
                   </p>
                 </div>
-
-                <div className="d-flex justify-content-between mt-5 mb-3">
+                <div className="d-flex justify-content-between mt-4 mb-3">
                   <Cartbtn text="Place Order" onClick={handlePlaceOrder} />
                   <Cartbtn
                     text="Back"
@@ -401,7 +251,23 @@ function Cart({
         )}
 
         {showPopup && (
-          <div className="toast-message show">✅ Order Placed!</div>
+          <div
+            className="toast-message show"
+            style={{
+              position: "fixed",
+              bottom: 0,
+              right: 0,
+              background: "#28a745",
+              color: "white",
+              padding: "1rem 1.5rem",
+              borderRadius: "10px 0 0 0",
+              zIndex: 9999,
+              fontWeight: "bold",
+              boxShadow: "0px -2px 8px rgba(0,0,0,0.2)",
+            }}
+          >
+            Order Placed!
+          </div>
         )}
       </div>
     </div>
