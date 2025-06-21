@@ -1,9 +1,9 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
-const SECRET = process.env.JWT_SECRET || "rahuljwtsecret";
 const cors = require("cors");
 const dotenv = require("dotenv");
+const SECRET = process.env.JWT_SECRET || "rahuljwtsecret";
 dotenv.config();
 
 const app = express();

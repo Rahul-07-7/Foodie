@@ -3,6 +3,8 @@ const bcrypt = require("bcrypt");
 const router = express.Router();
 const User = require("../models/User");
 const verifyToken = require("../middelware/verifyToken");
+const jwt = require("jsonwebtoken");
+const SECRET = process.env.JWT_SECRET || "rahuljwtsecret";
 
 router.post("/register", async (req, res) => {
   const { username, email, password } = req.body;
