@@ -10,7 +10,7 @@ import ScrollToTop from "./Components/Scrolltotop";
 import Register from "./Components/Register";
 import Login from "./Components/Login";
 import { useLocation } from "react-router-dom";
-import jwt_decode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 const RouteHandler = ({
   cartItems,
@@ -39,7 +39,7 @@ const RouteHandler = ({
       }
 
       try {
-        const decoded = jwt_decode(token);
+        const decoded = jwtDecode(token);
         if (decoded.exp * 1000 < Date.now()) {
           localStorage.clear();
           navigate("/login");
