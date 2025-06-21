@@ -10,7 +10,7 @@ import ScrollToTop from "./Components/Scrolltotop";
 import Register from "./Components/Register";
 import Login from "./Components/Login";
 import { useLocation } from "react-router-dom";
-import axios from "./axios";
+import jwt_decode from "jwt-decode";
 
 const RouteHandler = ({
   cartItems,
@@ -25,30 +25,41 @@ const RouteHandler = ({
   const { pathname } = useLocation();
 
   useEffect(() => {
-    const checkSession = async () => {
+    const checkToken = () => {
       if (["/login", "/register"].includes(pathname)) {
         setLoading(false);
         return;
       }
 
-      try {
-        const res = await axios.get("/auth/check-auth");
-        const data = res.data;
+      const token = localStorage.getItem("token");
 
-        if (!data.authenticated) {
+      if (!token) {
+        navigate("/login");
+        return;
+      }
+
+      try {
+        const decoded = jwt_decode(token);
+        if (decoded.exp * 1000 < Date.now()) {
+          localStorage.clear();
           navigate("/login");
+          return;
         }
       } catch (err) {
-        console.error("Auth check failed:", err);
+        console.error("Token decode failed:", err);
+        localStorage.clear();
         navigate("/login");
-      } finally {
-        setLoading(false);
+        return;
       }
+
+      setLoading(false);
     };
 
-    checkSession();
+    checkToken();
   }, [navigate, pathname]);
+
   if (loading) return <Loader />;
+
   return (
     <Routes>
       <Route path="/register" element={<Register />} />
