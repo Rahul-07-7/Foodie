@@ -135,75 +135,80 @@ function Cart({
 
             {showCheckout && (
               <div className="billing-section mt-5">
-                <h2 className="mb-4 text-warning">Billing & Payment</h2>
+                <form action="" onSubmit={handleCheckout}>
+                  <h2 className="mb-4 text-warning">Billing & Payment</h2>
 
-                <div className="row mb-5 border rounded p-4 bg-light">
-                  <h5 className="mb-3">Customer Details</h5>
-                  {["fullname", "email", "address"].map((field) => (
-                    <div className="col-md-4 input-box" key={field}>
-                      <label htmlFor={field}>
-                        {field.charAt(0).toUpperCase() + field.slice(1)}:
-                      </label>
-                      <input
-                        type={field === "email" ? "email" : "text"}
-                        id={field}
-                        placeholder={field}
-                        value={formData[field]}
-                        onChange={handleInputChange}
-                        required
-                        className="form-control"
-                      />
-                    </div>
-                  ))}
-                </div>
-
-                <div className="row border rounded p-4 bg-light">
-                  <h5 className="mb-3">Select Payment Method</h5>
-                  <div className="col-md-12 input-box">
-                    <label className="me-4">
-                      <input
-                        type="radio"
-                        name="paymentMethod"
-                        value="cod"
-                        checked={formData.paymentMethod === "cod"}
-                        onChange={handleInputChange}
-                        required
-                      />{" "}
-                      Cash on Delivery
-                    </label>
-
-                    <label>
-                      <input
-                        type="radio"
-                        name="paymentMethod"
-                        value="upi"
-                        checked={formData.paymentMethod === "upi"}
-                        onChange={handleInputChange}
-                      />{" "}
-                      UPI
-                    </label>
-
-                    {formData.paymentMethod === "upi" && (
-                      <div className="mt-3">
-                        <label htmlFor="upiId">UPI ID:</label>
+                  <div className="row mb-5 border rounded p-4 bg-light">
+                    <h5 className="mb-3">Customer Details</h5>
+                    {["fullname", "email", "address"].map((field) => (
+                      <div className="col-md-4 input-box" key={field}>
+                        <label htmlFor={field}>
+                          {field.charAt(0).toUpperCase() + field.slice(1)}:
+                        </label>
                         <input
-                          type="text"
-                          id="upiId"
-                          placeholder="example@upi"
-                          value={formData.upiId}
+                          type={field === "email" ? "email" : "text"}
+                          id={field}
+                          placeholder={field}
+                          value={formData[field]}
                           onChange={handleInputChange}
                           required
                           className="form-control"
                         />
                       </div>
-                    )}
+                    ))}
                   </div>
-                </div>
 
-                <div className="d-flex justify-content-between mt-5 mb-3">
-                  <Cartbtn text="Proceed to Checkout" />
-                  <Cartbtn text="Back" onClick={() => setShowCheckout(false)} />
-                </div>
+                  <div className="row border rounded p-4 bg-light">
+                    <h5 className="mb-3">Select Payment Method</h5>
+                    <div className="col-md-12 input-box">
+                      <label className="me-4">
+                        <input
+                          type="radio"
+                          name="paymentMethod"
+                          value="cod"
+                          checked={formData.paymentMethod === "cod"}
+                          onChange={handleInputChange}
+                          required
+                        />{" "}
+                        Cash on Delivery
+                      </label>
+
+                      <label>
+                        <input
+                          type="radio"
+                          name="paymentMethod"
+                          value="upi"
+                          checked={formData.paymentMethod === "upi"}
+                          onChange={handleInputChange}
+                        />{" "}
+                        UPI
+                      </label>
+
+                      {formData.paymentMethod === "upi" && (
+                        <div className="mt-3">
+                          <label htmlFor="upiId">UPI ID:</label>
+                          <input
+                            type="text"
+                            id="upiId"
+                            placeholder="example@upi"
+                            value={formData.upiId}
+                            onChange={handleInputChange}
+                            required
+                            className="form-control"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="d-flex justify-content-between mt-5 mb-3">
+                    <Cartbtn text="Proceed to Checkout" />
+                    <Cartbtn
+                      text="Back"
+                      onClick={() => setShowCheckout(false)}
+                    />
+                  </div>
+                </form>
               </div>
             )}
 
