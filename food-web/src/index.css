@@ -968,32 +968,38 @@ iframe {
 }
 .toast-message {
   position: fixed;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%) translateY(40px);
-  background: linear-gradient(135deg, #4ade80, #22c55e); /* green gradient */
+  bottom: 5px;
+  right: 5px;
+  transform: translateY(40px);
+  background: linear-gradient(
+    135deg,
+    #14b8a6,
+    #0ea5e9
+  ); /* teal-blue gradient */
   color: #fff;
-  padding: 14px 28px;
-  font-size: 17px;
-  font-weight: 600;
-  border-radius: 16px;
-  box-shadow: 0 8px 20px rgba(34, 197, 94, 0.35);
+  padding: 14px 22px;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(14, 165, 233, 0.3);
   opacity: 0;
-  transition: transform 0.5s ease, opacity 0.5s ease;
+  transition: transform 0.4s ease, opacity 0.4s ease;
   z-index: 9999;
   display: flex;
   align-items: center;
   gap: 10px;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.25px;
+  pointer-events: none;
 }
 
 .toast-message.show {
-  transform: translateX(-50%) translateY(-50%);
+  transform: translateY(0);
   opacity: 1;
+  pointer-events: auto;
 }
 
 .toast-message i {
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .price-filter {
@@ -1215,83 +1221,54 @@ table tr {
   font-size: 24px;
   margin-left: 10px;
 }
-/* Billing & Payment Section Styles */
-
-.billing-section .title {
-  text-transform: capitalize;
-  margin-bottom: 1rem;
-  font-weight: bold;
-  font-size: 1.5rem;
-  color: #333;
-}
-
-.billing-section form {
-  background-color: #f9f9f9;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-}
-
 .billing-section .row {
   display: flex;
   flex-wrap: wrap;
-  gap: 2rem;
-}
-
-.billing-section .col {
-  flex: 1 1 300px;
-}
-
-.billing-section .input-box {
+  gap: 1rem; /* smaller gap for tighter layout */
   margin-bottom: 1rem;
 }
 
-.billing-section .input-box label {
-  display: block;
-  font-weight: 500;
+.billing-section .input-box {
+  flex: 1 1 250px; /* smaller box width */
   margin-bottom: 0.5rem;
-  color: #555;
+}
+
+.billing-section .input-box label {
+  font-size: 0.9rem;
+  margin-bottom: 0.3rem;
 }
 
 .billing-section .input-box input {
-  width: 100%;
-  padding: 0.6rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 1rem;
-  transition: border-color 0.3s;
+  padding: 0.45rem 0.6rem; /* smaller input height */
+  font-size: 0.9rem;
 }
 
-.billing-section .input-box input:focus {
-  outline: none;
-  border-color: #007bff;
-}
-
-.billing-section .flex {
+.billing-section .payment-options {
   display: flex;
-  gap: 1rem;
+  gap: 1.5rem;
+  align-items: center;
   flex-wrap: wrap;
 }
 
-.billing-section img {
-  max-height: 30px;
-  margin-top: 0.5rem;
-}
-
-/* Submit button */
-.billing-section button[type="submit"] {
-  background-color: #28a745;
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border: none;
+.billing-section .payment-options label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  background-color: #fff;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #ccc;
   border-radius: 6px;
-  font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: border-color 0.3s ease;
 }
 
-.billing-section button[type="submit"]:hover {
-  background-color: #218838;
+.billing-section .payment-options input[type="radio"] {
+  accent-color: #22c55e; /* modern green color for selected option */
+}
+
+.billing-section .payment-options label:hover {
+  border-color: #22c55e;
 }
 .sidebar-links li a {
   text-decoration: none;

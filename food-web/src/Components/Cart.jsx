@@ -138,7 +138,7 @@ function Cart({
                 <form action="" onSubmit={handleCheckout}>
                   <h2 className="mb-4 text-warning">Billing & Payment</h2>
 
-                  <div className="row mb-5 border rounded p-4 bg-light">
+                  <div className="row border rounded p-3 bg-light">
                     <h5 className="mb-3">Customer Details</h5>
                     {["fullname", "email", "address"].map((field) => (
                       <div className="col-md-4 input-box" key={field}>
@@ -158,10 +158,10 @@ function Cart({
                     ))}
                   </div>
 
-                  <div className="row border rounded p-4 bg-light">
+                  <div className="row border rounded p-3 bg-light mt-4">
                     <h5 className="mb-3">Select Payment Method</h5>
-                    <div className="col-md-12 input-box">
-                      <label className="me-4">
+                    <div className="col-md-12 input-box payment-options">
+                      <label>
                         <input
                           type="radio"
                           name="paymentMethod"
@@ -169,7 +169,7 @@ function Cart({
                           checked={formData.paymentMethod === "cod"}
                           onChange={handleInputChange}
                           required
-                        />{" "}
+                        />
                         Cash on Delivery
                       </label>
 
@@ -180,25 +180,25 @@ function Cart({
                           value="upi"
                           checked={formData.paymentMethod === "upi"}
                           onChange={handleInputChange}
-                        />{" "}
+                        />
                         UPI
                       </label>
-
-                      {formData.paymentMethod === "upi" && (
-                        <div className="mt-3">
-                          <label htmlFor="upiId">UPI ID:</label>
-                          <input
-                            type="text"
-                            id="upiId"
-                            placeholder="example@upi"
-                            value={formData.upiId}
-                            onChange={handleInputChange}
-                            required
-                            className="form-control"
-                          />
-                        </div>
-                      )}
                     </div>
+
+                    {formData.paymentMethod === "upi" && (
+                      <div className="col-md-6 input-box mt-2">
+                        <label htmlFor="upiId">UPI ID:</label>
+                        <input
+                          type="text"
+                          id="upiId"
+                          placeholder="example@upi"
+                          value={formData.upiId}
+                          onChange={handleInputChange}
+                          required
+                          className="form-control"
+                        />
+                      </div>
+                    )}
                   </div>
 
                   <div className="d-flex justify-content-between mt-5 mb-3">
@@ -242,22 +242,8 @@ function Cart({
         )}
 
         {showPopup && (
-          <div
-            className="toast-message show"
-            style={{
-              position: "fixed",
-              bottom: 0,
-              right: 0,
-              background: "#28a745",
-              color: "white",
-              padding: "1rem 1.5rem",
-              borderRadius: "10px 0 0 0",
-              zIndex: 9999,
-              fontWeight: "bold",
-              boxShadow: "0px -2px 8px rgba(0,0,0,0.2)",
-            }}
-          >
-            Order Placed!
+          <div className="toast-message show">
+            <i className="fas fa-check-circle"></i>Order Placed!
           </div>
         )}
       </div>
