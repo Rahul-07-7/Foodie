@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import Logo from "../../public/logo.png";
 
 function Nav() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -64,10 +65,7 @@ function Nav() {
       {/* Sidebar */}
       <div className={`sidebar ${sidebarOpen ? "open" : ""}`}>
         <div className="sidebar-header">
-          <img
-            src="https://www.ex-coders.com/php-template/fresheat/assets/img/logo/logo.svg"
-            alt="Logo"
-          />
+          <img src={Logo} alt="Logo" />
           <button className="close-btn" onClick={() => setSidebarOpen(false)}>
             ×
           </button>

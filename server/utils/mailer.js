@@ -1,7 +1,7 @@
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
-  service: "gmail", // You can change this if using Outlook, etc.
+  service: "gmail",
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
@@ -29,18 +29,18 @@ async function sendOrderEmail(to, username, items, total) {
       subject: "Your Order Summary (Demo)",
       html,
     });
-    console.log("✅ Email sent to", to);
-    console.log("🧾 Order summary:", items);
+    console.log("Email sent to", to);
+    console.log("Order summary:", items);
   } catch (err) {
-    console.error("❌ Email sending failed:", err);
+    console.error("Email sending failed:", err);
     throw err;
   }
 }
 transporter.verify((error, success) => {
   if (error) {
-    console.error("❌ Email transporter failed:", error);
+    console.error("Email transporter failed:", error);
   } else {
-    console.log("✅ Email transporter is ready to send messages");
+    console.log("Email transporter is ready to send messages");
   }
 });
 

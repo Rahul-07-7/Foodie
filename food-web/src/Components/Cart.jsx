@@ -243,7 +243,7 @@ function Cart({
 
         {showPopup && (
           <div className="toast-message show">
-            <i className="fas fa-check-circle"></i>Order Placed!
+            <i className="fas fa-check-circle"></i>Thank You!
           </div>
         )}
       </div>
