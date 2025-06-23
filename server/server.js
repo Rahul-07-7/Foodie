@@ -9,7 +9,7 @@ dotenv.config();
 const app = express();
 app.use(
   cors({
-    origin: ["https://zestoria.netlify.app"],
+    origin: ["https://snacksy.netlify.app"],
     credentials: true,
   })
 );
