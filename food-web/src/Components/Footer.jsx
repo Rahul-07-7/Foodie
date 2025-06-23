@@ -40,10 +40,8 @@ function Footer() {
           </div>
           <div className="f-main">
             <div className="f-first">
-              <img
-                src="https://www.ex-coders.com/php-template/fresheat/assets/img/logo/logoWhite.svg"
-                alt=""
-              />
+              <img src="/logo.png" alt="Logo" />
+
               <p>
                 Phasellus ultricies aliquam volutpat ullamcorper laoreet neque,
                 a lacinia curabitur lacinia mollis

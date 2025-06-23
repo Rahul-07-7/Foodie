@@ -171,10 +171,8 @@ function Nav() {
       {/* Top Nav */}
       <div className="navs">
         <div className="nav-top">
-          <img
-            src="https://www.ex-coders.com/php-template/fresheat/assets/img/logo/logo.svg"
-            alt="Logo"
-          />
+          <img src="/logo.png" alt="Logo" />
+
           <button className="hamburger" onClick={() => setSidebarOpen(true)}>
             ☰
           </button>
